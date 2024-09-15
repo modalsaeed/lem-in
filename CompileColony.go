@@ -17,9 +17,10 @@ type Colony struct {
 	paths     []Path
 }
 type Room struct {
-	name   string
-	xCoord int
-	yCoord int
+	name           string
+	xCoord         int
+	yCoord         int
+	connectedRooms []string
 }
 
 type Path struct {
@@ -30,7 +31,6 @@ type Path struct {
 func CompileColony(filename string) (Colony, error) {
 	Colony := Colony{}
 	file, err := os.Open(filename)
-
 	if err != nil {
 		fmt.Println("error opening file")
 		return Colony, err
@@ -81,7 +81,7 @@ func CompileColony(filename string) (Colony, error) {
 				return Colony, err
 			}
 
-			Colony.startRoom = Room{lines[0], x, y}
+			Colony.startRoom = Room{lines[0], x, y, nil}
 			Colony.rooms = append(Colony.rooms, Colony.startRoom)
 
 		} else if line == "##end" {
@@ -107,13 +107,12 @@ func CompileColony(filename string) (Colony, error) {
 				return Colony, err
 			}
 
-			Colony.endRoom = Room{lines[0], x, y}
+			Colony.endRoom = Room{lines[0], x, y, nil}
 			Colony.rooms = append(Colony.rooms, Colony.endRoom)
 
 		} else if line == "" || line[0] == '#' {
 			continue
 		} else {
-
 			if strings.Contains(line, "-") {
 				lines := strings.Split(line, "-")
 
@@ -124,6 +123,29 @@ func CompileColony(filename string) (Colony, error) {
 				}
 
 				Colony.paths = append(Colony.paths, Path{lines[0], lines[1]})
+
+				for i := 0; i < len(Colony.rooms); i++ {
+					if lines[0] == Colony.rooms[i].name {
+
+						if Colony.rooms[i].name == Colony.startRoom.name {
+							Colony.startRoom.connectedRooms = append(Colony.startRoom.connectedRooms, lines[1])
+						} else if Colony.endRoom.name == Colony.rooms[i].name {
+							Colony.endRoom.connectedRooms = append(Colony.endRoom.connectedRooms, lines[1])
+						}
+
+						Colony.rooms[i].connectedRooms = append(Colony.rooms[i].connectedRooms, lines[1])
+
+					} else if lines[1] == Colony.rooms[i].name {
+
+						if Colony.rooms[i].name == Colony.startRoom.name {
+							Colony.startRoom.connectedRooms = append(Colony.startRoom.connectedRooms, lines[0])
+						} else if Colony.endRoom.name == Colony.rooms[i].name {
+							Colony.endRoom.connectedRooms = append(Colony.endRoom.connectedRooms, lines[0])
+						}
+
+						Colony.rooms[i].connectedRooms = append(Colony.rooms[i].connectedRooms, lines[0])
+					}
+				}
 
 			} else {
 				lines := strings.Split(line, " ")
@@ -146,9 +168,8 @@ func CompileColony(filename string) (Colony, error) {
 					return Colony, err
 				}
 
-				Colony.rooms = append(Colony.rooms, Room{lines[0], x, y})
+				Colony.rooms = append(Colony.rooms, Room{lines[0], x, y, nil})
 			}
-
 		}
 
 	}

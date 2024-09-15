@@ -66,10 +66,10 @@ func drawRoom(colonyImage *image.RGBA, room Room, minX, minY, maxX, maxY int, co
 	y := scaleCoordinate(room.yCoord, minY, maxY, imageHeight)
 
 	roomColor := color.RGBA{0, 0, 255, 255}
-	if room == colony.startRoom {
+	if room.name == colony.startRoom.name {
 		roomColor = color.RGBA{0, 255, 0, 255}
 	}
-	if room == colony.endRoom {
+	if room.name == colony.endRoom.name {
 		roomColor = color.RGBA{255, 165, 0, 255}
 	}
 	draw.Draw(colonyImage, image.Rect(x-roomSize/2, y-roomSize/2, x+roomSize/2, y+roomSize/2), &image.Uniform{roomColor}, image.Point{}, draw.Src)

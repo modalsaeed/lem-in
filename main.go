@@ -32,4 +32,5 @@ func main() {
 	fmt.Println(colony.endRoom)
 	fmt.Println(colony.rooms)
 	fmt.Println(colony.paths)
+	BFS(colony)
 }
