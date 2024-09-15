@@ -25,6 +25,7 @@ func main() {
 	if err != nil {
 		return
 	}
+
 	DrawColony(colony)
 	fmt.Println(colony.ants)
 	fmt.Println(colony.startRoom)

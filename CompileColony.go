@@ -152,5 +152,12 @@ func CompileColony(filename string) (Colony, error) {
 		}
 
 	}
+
+	if Colony.startRoom.name == "" || Colony.endRoom.name == "" {
+		fmt.Println("error: no start or end room")
+		err := errors.New("error: no start or end room")
+		return Colony, err
+	}
+
 	return Colony, err
 }
