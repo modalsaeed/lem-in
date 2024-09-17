@@ -42,9 +42,13 @@ func CompileColony(filename string) (Colony, error) {
 
 	first := true
 	for scanner.Scan() {
+		line := scanner.Text()
+
+		if line == "" {
+			continue
+		}
 
 		if first {
-			line := scanner.Text()
 			ants, err := strconv.Atoi(line)
 			if err != nil || ants < 1 {
 				fmt.Println("error: invalid number of ants")
@@ -55,10 +59,12 @@ func CompileColony(filename string) (Colony, error) {
 			continue
 		}
 
-		line := scanner.Text()
-
 		if line == "##start" {
-
+			if Colony.startRoom.name != "" {
+				fmt.Println("error: duplicate start room")
+				err := errors.New("error: duplicate start room")
+				return Colony, err
+			}
 			scanner.Scan()
 			lines := strings.Split(scanner.Text(), " ")
 
@@ -85,6 +91,12 @@ func CompileColony(filename string) (Colony, error) {
 			Colony.rooms = append(Colony.rooms, Colony.startRoom)
 
 		} else if line == "##end" {
+
+			if Colony.endRoom.name != "" {
+				fmt.Println("error: duplicate end room")
+				err := errors.New("error: duplicate end room")
+				return Colony, err
+			}
 
 			scanner.Scan()
 			lines := strings.Split(scanner.Text(), " ")
