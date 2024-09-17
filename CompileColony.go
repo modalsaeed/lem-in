@@ -89,7 +89,7 @@ func CompileColony(filename string) (Colony, error) {
 
 			y, err := strconv.Atoi(lines[2])
 			if err != nil {
-				fmt.Println("error: invalid x coordinate")
+				fmt.Println("error: invalid y coordinate")
 				return Colony, err
 			}
 
@@ -127,7 +127,7 @@ func CompileColony(filename string) (Colony, error) {
 
 			y, err := strconv.Atoi(lines[2])
 			if err != nil {
-				fmt.Println("error: invalid x coordinate")
+				fmt.Println("error: invalid y coordinate")
 				return Colony, err
 			}
 
@@ -200,7 +200,7 @@ func CompileColony(filename string) (Colony, error) {
 
 				y, err := strconv.Atoi(lines[2])
 				if err != nil {
-					fmt.Println("error: invalid x coordinate")
+					fmt.Println("error: invalid y coordinate")
 					return Colony, err
 				}
 
