@@ -28,5 +28,9 @@ func main() {
 
 	DrawColony(colony)
 	paths := findPaths(colony)
-	simulateAnts(colony.ants, paths)
+	if len(paths) < 1 {
+		fmt.Println("No possible Paths")
+		return
+	}
+	simulateAnts(colony.ants, paths, colony.endRoom.name)
 }

@@ -4,11 +4,12 @@ import (
 	"fmt"
 )
 
-func simulateAnts(ants int, paths [][]string) {
+func simulateAnts(ants int, paths [][]string, end string) {
 	antCount := 0
 	occupiedRooms := make(map[string]bool)
-	firstPath := paths[0]
-	end := firstPath[len(firstPath)-1]
+	if end == "" {
+		return
+	}
 	antPaths := make([][]string, ants)
 	antSteps := make([]int, ants)
 	for antCount < ants {
