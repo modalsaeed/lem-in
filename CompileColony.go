@@ -66,16 +66,9 @@ func CompileColony(filename string) (Colony, error) {
 				return Colony, err
 			}
 			scanner.Scan()
-			lines := strings.Split(scanner.Text(), " ")
+			lines, flag := checkRoom(scanner.Text())
 
-			if len(lines) != 3 {
-
-				fmt.Println("error: invalid start room")
-				err := errors.New("error: invalid start room")
-				return Colony, err
-			}
-
-			if lines[0][0] == 'L' || lines[0][0] == '#' {
+			if !flag {
 				fmt.Println("error: invalid start room")
 				err := errors.New("error: invalid start room")
 				return Colony, err
@@ -105,15 +98,9 @@ func CompileColony(filename string) (Colony, error) {
 			}
 
 			scanner.Scan()
-			lines := strings.Split(scanner.Text(), " ")
+			lines, flag := checkRoom(scanner.Text())
 
-			if len(lines) != 3 {
-				fmt.Println("error: invalid end room")
-				err := errors.New("error: invalid end room")
-				return Colony, err
-			}
-
-			if lines[0][0] == 'L' || lines[0][0] == '#' {
+			if !flag {
 				fmt.Println("error: invalid end room")
 				err := errors.New("error: invalid end room")
 				return Colony, err
@@ -138,7 +125,13 @@ func CompileColony(filename string) (Colony, error) {
 			continue
 		} else {
 			if strings.Contains(line, "-") {
-				lines := strings.Split(line, "-")
+				lines, flag := checkPath(line)
+
+				if !flag {
+					fmt.Println("error: invalid path")
+					err := errors.New("error: invalid path")
+					return Colony, err
+				}
 
 				if len(lines) != 2 {
 					fmt.Println("error: invalid path")
@@ -178,15 +171,8 @@ func CompileColony(filename string) (Colony, error) {
 				}
 
 			} else {
-				lines := strings.Split(line, " ")
-
-				if len(lines) != 3 {
-					fmt.Println("error: invalid room")
-					err := errors.New("error: invalid room")
-					return Colony, err
-				}
-
-				if lines[0][0] == 'L' || lines[0][0] == '#' {
+				lines, flag := checkRoom(line)
+				if !flag {
 					fmt.Println("error: invalid room")
 					err := errors.New("error: invalid room")
 					return Colony, err
