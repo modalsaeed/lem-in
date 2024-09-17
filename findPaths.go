@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"sort"
 )
 
@@ -20,7 +19,6 @@ func findPaths(colony Colony) [][]string {
 	for _, path := range allPaths {
 		if isUnique(path, selectedPaths) {
 			selectedPaths = append(selectedPaths, path)
-			fmt.Println("Path UNIQUE: ", path)
 		}
 	}
 	return selectedPaths
