@@ -22,6 +22,7 @@ func simulateAnts(ants int, paths [][]string, end string) {
 			antCount++
 		}
 	}
+	steps := 0
 	flag := true
 	for flag {
 
@@ -46,12 +47,13 @@ func simulateAnts(ants int, paths [][]string, end string) {
 			}
 
 		}
+		steps++
 		fmt.Println()
 		if sum(antSteps) == ants*-1 {
 			flag = false
 		}
 	}
-	return
+	fmt.Printf("Done in %d steps.\n", steps)
 }
 
 func sum(steps []int) int {

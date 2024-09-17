@@ -1,30 +1,32 @@
 package main
 
-// import (
-// 	"fmt"
-// 	"strings"
-// )
+import (
+	"fmt"
+	"sort"
+)
 
 func findPaths(colony Colony) [][]string {
 	start := colony.startRoom.name
 	end := colony.endRoom.name
 	allPaths := [][]string{}
+	selectedPaths := [][]string{}
 
 	DFS(colony, start, end, map[string]bool{}, []string{}, &allPaths)
 
-	// for i, path := range allPaths {
-	// 	fmt.Println("Path", i+1, ":", strings.Join(path, " -> "))
-	// }
-	return allPaths
+	sort.Slice(allPaths, func(i, j int) bool {
+		return len(allPaths[i]) < len(allPaths[j])
+	})
+
+	for _, path := range allPaths {
+		if isUnique(path, selectedPaths) {
+			selectedPaths = append(selectedPaths, path)
+			fmt.Println("Path UNIQUE: ", path)
+		}
+	}
+	return selectedPaths
 }
 
 func DFS(colony Colony, current, end string, visited map[string]bool, currentPath []string, allPaths *[][]string) {
-
-	for _, completedPath := range *allPaths {
-		if contains(completedPath[1:], currentPath) {
-			return
-		}
-	}
 
 	currentPath = append(currentPath, current)
 
@@ -67,4 +69,13 @@ func contains(completedPath []string, currentPath []string) bool {
 		}
 	}
 	return false
+}
+
+func isUnique(path []string, selectedPaths [][]string) bool {
+	for _, selectedPath := range selectedPaths {
+		if contains(path[1:len(path)-1], selectedPath[1:len(selectedPath)-1]) {
+			return false
+		}
+	}
+	return true
 }
