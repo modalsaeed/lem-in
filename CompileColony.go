@@ -75,6 +75,12 @@ func CompileColony(filename string) (Colony, error) {
 				return Colony, err
 			}
 
+			if lines[0][0] == 'L' || lines[0][0] == '#' {
+				fmt.Println("error: invalid start room")
+				err := errors.New("error: invalid start room")
+				return Colony, err
+			}
+
 			x, err := strconv.Atoi(lines[1])
 			if err != nil {
 				fmt.Println("error: invalid x coordinate")
@@ -107,6 +113,12 @@ func CompileColony(filename string) (Colony, error) {
 				return Colony, err
 			}
 
+			if lines[0][0] == 'L' || lines[0][0] == '#' {
+				fmt.Println("error: invalid end room")
+				err := errors.New("error: invalid end room")
+				return Colony, err
+			}
+
 			x, err := strconv.Atoi(lines[1])
 			if err != nil {
 				fmt.Println("error: invalid x coordinate")
@@ -129,6 +141,12 @@ func CompileColony(filename string) (Colony, error) {
 				lines := strings.Split(line, "-")
 
 				if len(lines) != 2 {
+					fmt.Println("error: invalid path")
+					err := errors.New("error: invalid path")
+					return Colony, err
+				}
+
+				if lines[0] == lines[1] {
 					fmt.Println("error: invalid path")
 					err := errors.New("error: invalid path")
 					return Colony, err
@@ -163,6 +181,12 @@ func CompileColony(filename string) (Colony, error) {
 				lines := strings.Split(line, " ")
 
 				if len(lines) != 3 {
+					fmt.Println("error: invalid room")
+					err := errors.New("error: invalid room")
+					return Colony, err
+				}
+
+				if lines[0][0] == 'L' || lines[0][0] == '#' {
 					fmt.Println("error: invalid room")
 					err := errors.New("error: invalid room")
 					return Colony, err
