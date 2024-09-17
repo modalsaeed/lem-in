@@ -1,9 +1,9 @@
 package main
 
-import (
-	"fmt"
-	"strings"
-)
+// import (
+// 	"fmt"
+// 	"strings"
+// )
 
 func findPaths(colony Colony) [][]string {
 	start := colony.startRoom.name
@@ -12,9 +12,9 @@ func findPaths(colony Colony) [][]string {
 
 	DFS(colony, start, end, map[string]bool{}, []string{}, &allPaths)
 
-	for i, path := range allPaths {
-		fmt.Println("Path", i+1, ":", strings.Join(path, " -> "))
-	}
+	// for i, path := range allPaths {
+	// 	fmt.Println("Path", i+1, ":", strings.Join(path, " -> "))
+	// }
 	return allPaths
 }
 

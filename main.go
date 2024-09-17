@@ -27,10 +27,6 @@ func main() {
 	}
 
 	DrawColony(colony)
-	fmt.Println(colony.ants)
-	fmt.Println(colony.startRoom)
-	fmt.Println(colony.endRoom)
-	fmt.Println(colony.rooms)
-	fmt.Println(colony.paths)
-	findPaths(colony)
+	paths := findPaths(colony)
+	simulateAnts(colony.ants, paths)
 }
