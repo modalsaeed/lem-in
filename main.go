@@ -21,6 +21,7 @@ func main() {
 	}
 
 	colony, err := CompileColony(filename)
+	fmt.Println()
 
 	if err != nil {
 		return
@@ -29,19 +30,19 @@ func main() {
 		fmt.Println("Colony is Invalid")
 		return
 	}
-	fmt.Println("Colony Compiled!")
+	//fmt.Println("Colony Compiled!")
 
 	DrawColony(colony)
 
-	fmt.Println("Colony Drawn!")
+	//fmt.Println("Colony Drawn!")
 
 	paths := findPaths(colony)
 
 	if len(paths) < 1 {
-		fmt.Println("No possible Paths")
+		//fmt.Println("No possible Paths")
 		return
 	} else {
-		fmt.Println("Paths Found!")
+		//fmt.Println("Paths Found!")
 	}
 
 	simulateAnts(colony.ants, paths, colony.endRoom.name)

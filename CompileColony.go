@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"regexp"
 	"strconv"
 	"strings"
 )
@@ -29,7 +30,11 @@ type Path struct {
 }
 
 func CompileColony(filename string) (Colony, error) {
+	start := regexp.MustCompile(`\s*##start\s*`)
+	end := regexp.MustCompile(`\s*##end\s*`)
+	antNum := regexp.MustCompile(`\s*\d+\s*`)
 	Colony := Colony{}
+	ColonyText := ""
 	file, err := os.Open(filename)
 	if err != nil {
 		fmt.Println("error opening file")
@@ -41,6 +46,7 @@ func CompileColony(filename string) (Colony, error) {
 	scanner := bufio.NewScanner(file)
 
 	first := true
+
 	for scanner.Scan() {
 		line := scanner.Text()
 
@@ -49,6 +55,14 @@ func CompileColony(filename string) (Colony, error) {
 		}
 
 		if first {
+
+			if !antNum.MatchString(line) {
+				fmt.Println("error: invalid number of ants")
+				err := errors.New("error: invalid number of ants")
+				return Colony, err
+			}
+
+			line = strings.TrimSpace(line)
 			ants, err := strconv.Atoi(line)
 			if err != nil || ants < 1 {
 				fmt.Println("error: invalid number of ants")
@@ -56,16 +70,22 @@ func CompileColony(filename string) (Colony, error) {
 			}
 			first = false
 			Colony.ants = ants
+			ColonyText = ColonyText + line + "\n"
 			continue
 		}
 
-		if line == "##start" {
+		if start.MatchString(line) {
 			if Colony.startRoom.name != "" {
 				fmt.Println("error: duplicate start room")
 				err := errors.New("error: duplicate start room")
 				return Colony, err
 			}
 			scanner.Scan()
+
+			for scanner.Text() == "" {
+				scanner.Scan()
+			}
+
 			lines, flag := checkRoom(scanner.Text())
 
 			if !flag {
@@ -88,8 +108,13 @@ func CompileColony(filename string) (Colony, error) {
 
 			Colony.startRoom = Room{lines[0], x, y, nil}
 			Colony.rooms = append(Colony.rooms, Colony.startRoom)
+			ColonyText = ColonyText + "##start\n"
+			for _, s := range lines {
+				ColonyText = ColonyText + s + " "
+			}
+			ColonyText = ColonyText + "\n"
 
-		} else if line == "##end" {
+		} else if end.MatchString(line) {
 
 			if Colony.endRoom.name != "" {
 				fmt.Println("error: duplicate end room")
@@ -98,6 +123,11 @@ func CompileColony(filename string) (Colony, error) {
 			}
 
 			scanner.Scan()
+
+			for scanner.Text() == "" {
+				scanner.Scan()
+			}
+
 			lines, flag := checkRoom(scanner.Text())
 
 			if !flag {
@@ -120,6 +150,11 @@ func CompileColony(filename string) (Colony, error) {
 
 			Colony.endRoom = Room{lines[0], x, y, nil}
 			Colony.rooms = append(Colony.rooms, Colony.endRoom)
+			ColonyText = ColonyText + "##end\n"
+			for _, s := range lines {
+				ColonyText = ColonyText + s + " "
+			}
+			ColonyText = ColonyText + "\n"
 
 		} else if line == "" || line[0] == '#' {
 			continue
@@ -146,6 +181,8 @@ func CompileColony(filename string) (Colony, error) {
 				}
 
 				Colony.paths = append(Colony.paths, Path{lines[0], lines[1]})
+
+				ColonyText = ColonyText + lines[0] + "-" + lines[1] + "\n"
 
 				for i := 0; i < len(Colony.rooms); i++ {
 					if lines[0] == Colony.rooms[i].name {
@@ -191,6 +228,10 @@ func CompileColony(filename string) (Colony, error) {
 				}
 
 				Colony.rooms = append(Colony.rooms, Room{lines[0], x, y, nil})
+				for _, s := range lines {
+					ColonyText = ColonyText + s + " "
+				}
+				ColonyText = ColonyText + "\n"
 			}
 		}
 
@@ -201,6 +242,6 @@ func CompileColony(filename string) (Colony, error) {
 		err := errors.New("error: no start or end room")
 		return Colony, err
 	}
-
+	fmt.Print(ColonyText)
 	return Colony, err
 }
