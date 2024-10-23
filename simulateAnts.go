@@ -9,6 +9,7 @@ func simulateAnts(ants int, paths [][]string, end string) {
 	optimizedAllocation := optimizePaths(paths, ants)
 
 	occupiedRooms := make(map[string]bool)
+	occupiedPaths := make(map[int]bool)
 	if end == "" {
 		return
 	}
@@ -28,12 +29,23 @@ func simulateAnts(ants int, paths [][]string, end string) {
 			antsAssigned++
 		}
 	}
-
 	steps := 0
 	flag := true
 	for flag {
 		for ant, path := range antPaths {
 			if antSteps[ant] == -1 {
+				continue
+			}
+			isDirectPath := len(path) == 2
+			pathIndex := -1
+
+			for i, p := range paths {
+				if compareSlice(p, path) {
+					pathIndex = i
+					break
+				}
+			}
+			if occupiedPaths[pathIndex] {
 				continue
 			}
 			step := antSteps[ant]
@@ -43,6 +55,9 @@ func simulateAnts(ants int, paths [][]string, end string) {
 				}
 				if path[step] != end {
 					occupiedRooms[path[step]] = true
+				}
+				if isDirectPath {
+					occupiedPaths[pathIndex] = true
 				}
 				if antNumbers[ant] == 0 {
 					antNumbers[ant] = nextAntNumber
@@ -57,13 +72,15 @@ func simulateAnts(ants int, paths [][]string, end string) {
 			}
 		}
 		steps++
+		reset(occupiedPaths)
 		fmt.Println()
 		if sum(antSteps) == ants*-1 {
 			flag = false
 		}
 	}
-	fmt.Printf("Done in %d steps.\n", steps)
+	 fmt.Printf("Done in %d steps.\n", steps)
 }
+
 func sum(steps []int) int {
 	total := 0
 	for _, step := range steps {
@@ -104,4 +121,22 @@ func moveAntImproves(paths [][]string, allocation []int, fromPath, toPath int) b
 	currentMax := max(len(paths[fromPath])+allocation[fromPath], len(paths[toPath])+allocation[toPath])
 	newMax := max(len(paths[fromPath])+allocation[fromPath]-1, len(paths[toPath])+allocation[toPath]+1)
 	return newMax < currentMax
+}
+
+func compareSlice(a, b []string) bool {
+	if len(a) != len(b) {
+		return false
+	}
+	for i := 0; i < len(a); i++ {
+		if a[i] != b[i] {
+			return false
+		}
+	}
+	return true
+}
+
+func reset(m map[int]bool) {
+	for k := range m {
+		m[k] = false
+	}
 }
