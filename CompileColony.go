@@ -180,9 +180,11 @@ func CompileColony(filename string) (Colony, error) {
 					return Colony, err
 				}
 
-				Colony.paths = append(Colony.paths, Path{lines[0], lines[1]})
-
-				ColonyText = ColonyText + lines[0] + "-" + lines[1] + "\n"
+				if checkDuplicatePaths(lines[0], lines[1], Colony) {
+					fmt.Println("error: duplicate path")
+					err := errors.New("error: duplicate path")
+					return Colony, err
+				}
 
 				for i := 0; i < len(Colony.rooms); i++ {
 					if lines[0] == Colony.rooms[i].name {
@@ -206,6 +208,9 @@ func CompileColony(filename string) (Colony, error) {
 						Colony.rooms[i].connectedRooms = append(Colony.rooms[i].connectedRooms, lines[0])
 					}
 				}
+
+				Colony.paths = append(Colony.paths, Path{lines[0], lines[1]})
+				ColonyText = ColonyText + lines[0] + "-" + lines[1] + "\n"
 
 			} else {
 				lines, flag := checkRoom(line)
@@ -244,4 +249,13 @@ func CompileColony(filename string) (Colony, error) {
 	}
 	fmt.Print(ColonyText)
 	return Colony, err
+}
+
+func checkDuplicatePaths(room1 string, room2 string, Colony Colony) bool {
+	for _, path := range Colony.paths {
+		if (path.room1 == room1 && path.room2 == room2) || (path.room1 == room2 && path.room2 == room1) {
+			return true
+		}
+	}
+	return false
 }
