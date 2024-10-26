@@ -7,7 +7,6 @@ import (
 
 func simulateAnts(ants int, paths [][]string, end string) {
 	optimizedAllocation := optimizePaths(paths, ants)
-
 	occupiedRooms := make(map[string]bool)
 	occupiedPaths := make(map[int]bool)
 	if end == "" {
@@ -78,7 +77,7 @@ func simulateAnts(ants int, paths [][]string, end string) {
 			flag = false
 		}
 	}
-	 fmt.Printf("Done in %d steps.\n", steps)
+	fmt.Printf("Done in %d steps.\n", steps)
 }
 
 func sum(steps []int) int {

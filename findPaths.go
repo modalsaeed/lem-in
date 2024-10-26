@@ -16,11 +16,18 @@ func findPaths(colony Colony) [][]string {
 		return len(allPaths[i]) < len(allPaths[j])
 	})
 
+	pathSets:=[][][]string{}
+
 	for _, path := range allPaths {
-		if isUnique(path, selectedPaths) {
-			selectedPaths = append(selectedPaths, path)
+		for i,set:=range pathSets{
+			if isUnique(path, set) {
+				pathSets[i]=append(pathSets[i], path)
+				break
+			}
 		}
+			pathSets=append(pathSets, [][]string{path})
 	}
+	selectedPaths=selectOptimalSet(pathSets)
 	return selectedPaths
 }
 
@@ -77,3 +84,29 @@ func isUnique(path []string, selectedPaths [][]string) bool {
 	}
 	return true
 }
+
+func selectOptimalSet(pathSets [][][]string) [][]string {
+    var bestSet [][]string
+    bestScore := float64(0)
+
+    for _, set := range pathSets {
+        // Calculate average path length
+        totalLength := 0
+        for _, path := range set {
+            totalLength += len(path)
+        }
+        avgLength := float64(totalLength) / float64(len(set))
+        
+        // Score = number of paths / average length
+        // This favors more paths with shorter lengths
+        score := float64(len(set)) / avgLength
+        
+        if score > bestScore {
+            bestScore = score
+            bestSet = set
+        }
+    }
+    
+    return bestSet
+}
+
